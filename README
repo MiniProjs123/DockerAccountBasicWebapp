@@ -1,0 +1,173 @@
+"# BasicAccountWebapp"
+
+*******************************************
+NOTES:
+
+- No account modelling included in the implementation as this was not necessary
+- Removed the superfluous word 'and' from scenarios 2 and 3
+- Test provided:
+  - service
+  - controller 
+  
+*******************************************
+ENDPOINT:  
+
+http://localhost:5000/greeting/{account}/{id}/{type}   
+
+EXAMPLES:
+1) Get a greeting for a small personal business account with id 123       
+   http://localhost:5000/greeting/personal/123/small
+
+2) Attempt to get a small business account (expect a message saying this path is not implemented)
+   http://localhost:5000/greeting/business/1/small
+	
+3) Get a greeting for a big business account:	
+   http://localhost:5000/greeting/business/1/big 
+
+*******************************************
+********* DIRECTIONS TO RUN APP: **********
+*******************************************
+PREREQUITES:
+
+- unix based operating system
+- java 8+
+- docker 19+ installed
+
+-------------------------------------------
+- Direct from MAVEN: 
+
+  - download the app from github:
+    https://github.com/MiniProjs123/BasicAccountWebapp
+    
+  - Run the following commands at the application level directory:
+    - Build the application jar files
+      mvn clean install
+  
+    - Test the app with maven (optional):
+      mvn spring-boot:run
+      
+      --> http://localhost:5000/greeting/personal/123/small
+      --> http://localhost:5000/greeting/business/1/small
+      --> http://localhost:5000/greeting/business/1/big
+  
+    - press 'CTRL+C' to stop the application 
+ 
+ ------------------------------------------- 
+  
+ - Run in DOCKER container LOCALLY:
+ 
+     - check that docker is installed and see if any containers are running currently
+       docker --version
+       docker ps
+        
+     -  Prepare the dependency variable used in the Dockerfile:
+        mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+        
+	 - Build the docker image for the app
+	   docker build -t accountapp .
+	    
+	 - verify the image has been created as expected
+	   docker image ls
+	   
+	 - run the app in an instance of the docker container defined in the image
+	   docker run -p 5000:5000 -t accountapp
+
+	 - stop the app command line (optional):
+	   press 'CTRL+C' to stop the command line running
+	
+	 - verify the container is up and running, and note the container id for 'accountapp'
+	   docker ps
+
+     - test the application from the browser:	   
+      --> http://localhost:5000/greeting/personal/123/small
+      --> http://localhost:5000/greeting/business/1/small
+      --> http://localhost:5000/greeting/business/1/big	   
+	
+	 - stop the docker container instance 
+	   docker stop [container_id] 
+	   
+	 - verify that the container has now been stopped
+       docker ps -a
+	   
+*******************************************   
+ONLINE RESOURCES:
+
+--> Spring boot 2 docker example (especially for dockerfile):
+	https://spring.io/guides/gs/spring-boot-docker/
+
+--> Dockerhub
+    hub.docker.com
+    
+--> Github - Local mac:
+    ~/Documents/AccountWorkspace/BasicAccountWebapp [original from MiniProjs123 (4748) --> readme from pre-March 2020]
+    ~/Documents/Oct2020Workspace/BasicAccountWebapp [TRT] BasicAccountWebappCopy (readme from March 2020)
+    
+    --> however, only AccountWorkspace is working:
+        The following code used in dockerfile which prepares the 'DEPENDENCY' parameter 
+        creating BOOT-INF/lib + BOOTINF/classes: ~/Documents/AccountWorkspace/BasicAccountWebapp [MiniProjs123]  
+        --> mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+    
+
+--> Make sure docker daemon is running locally - ie. Applications/Docker
+    Then login to docker client.
+    
+ *******************************************   
+ PUSH AND PULL TAGGED IMAGES USING DOCKERHUB:
+ 
+ The important point to remember is that the image is identified
+ and retrieved from the repository by tag, and should therefore
+ contain parts to identify both name and version.
+ 
+ The dockerhub repository must also be public.
+ --> dockerdostuff = the docker hub account username
+ --> dockerrepo is a public repository I set up on this docker hub account
+ 
+ ==> Get Started:
+     --> login to remote dockerhub registry 
+     --> start local docker daemons app if not already running (Applications/Docker) 
+     --> login to local docker client via command line
+         --> docker login (and supply dockerhub username and pass when prompted)
+ 
+ ==> Get existing local images:  docker image ls
+ 
+ ==> EITHER tag an existing image (by id) and bind to your dockerhub repository:
+            docker tag bb38976d03cf yourhubusername/verse_gapminder:firsttry
+            docker tag 16b8d05ea9d2 dockerdostuff/dockerrepo:BasicAccountWebappv1.3 
+                
+ ==> OR     build a new image and tag it at once [PREFERRED OPTION]
+            (obviously from the local location containing the docker file):
+            ==> docker build -t dockerdostuff/dockerrepo:BasicAccountWebappv1.4 .
+ 
+ ==> Then push your docker image to your repository:
+            docker push dockerdostuff/dockerrepo:BasicAccountWebappv1.4
+            
+ ==> remove the image locally to test pull it in from remote:              
+     docker image remove [-f] [image_id]
+               
+ ==> pull the image down (arguably could miss out this step):
+     docker pull dockerdostuff/dockerrepo:BasicAccountWebappv1.4              
+      
+ ==> or just run with local image copy of course: 
+     docker run -p 5000:5000 -t dockerdostuff/dockerrepo:BasicAccountWebappv1.4
+ 
+ ==> run the remote sourced image locally:
+     docker run -p 5000:5000 -t dockerdostuff/dockerrepo:BasicAccountWebappv1.4             
+               
+ *******************************************   
+ INSTRUCTIONS FOR USE FOR A USER WITH A DOCKERHUB ACCOUNT:
+ 
+ --> logon to your docker hub account
+ --> pull the tagged image and run it:
+                  
+     docker pull dockerdostuff/BasicAccountWebappv1.3              
+     docker run -p 5000:5000 -t dockerdostuff/dockerrepo:BasicAccountWebappv1.3              
+ 
+ *******************************************   
+
+
+
+
+
+
+
+
